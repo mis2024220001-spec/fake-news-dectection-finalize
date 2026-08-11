@@ -47,9 +47,8 @@ Labels are interpreted as:
 The original raw CSV is included through Git LFS so that the repository can be
 cloned and reproduced directly. The processed CSV remains excluded because it
 is a generated file; `python main.py` recreates it from the raw data. The
-cleaning step writes UTF-8 CSV with proper quoting and also creates
-`data/processed/cleaned_sample_excel.tsv`, which can be opened directly in
-Excel without article commas being interpreted as extra columns.
+cleaning step writes UTF-8 CSV with proper quoting and also creates the
+100-row `data/processed/cleaned_sample.csv` preview for presentation use.
 
 ## Methodology
 
@@ -110,9 +109,9 @@ Run the complete data and model workflow:
 python main.py
 ```
 
-When opening `cleaned_data.csv` in Excel, use **Data > From Text/CSV**, choose
-**UTF-8** encoding and **Comma** as the delimiter. Do not double-click a CSV
-if Excel's regional settings use semicolons as the default separator.
+When opening either CSV in Excel, use **Data > From Text/CSV**, choose
+**UTF-8** encoding and **Comma** as the delimiter. This preserves article
+text containing commas inside the correct column.
 
 Start the Streamlit dashboard:
 

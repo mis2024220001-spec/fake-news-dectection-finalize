@@ -95,12 +95,6 @@ def clean_data() -> pd.DataFrame:
 
     preview = df.head(100).copy()
     preview.to_csv(output_dir / "cleaned_sample.csv", index=False, encoding="utf-8-sig")
-    preview.to_csv(
-        output_dir / "cleaned_sample_excel.tsv",
-        index=False,
-        sep="\t",
-        encoding="utf-8-sig",
-    )
 
     print(f"\nCleaned dataset saved to:\n{output_path}")
     return df
