@@ -113,7 +113,10 @@ with tab_demo:
 
                 result = predict_news(text_input, model_name)
                 label = "Fake News" if result["prediction"] == 0 else "Real News"
-                st.success(f"Prediction: {label}")
+                if result["prediction"] == 0:
+                    st.error(f"Prediction: {label}")
+                else:
+                    st.success(f"Prediction: {label}")
                 st.metric("Confidence", f"{result['probability'] * 100:.2f}%")
                 record = {
                     "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
