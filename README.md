@@ -144,9 +144,11 @@ The workflow writes these files locally:
 - `outputs/figures/`
 - `models/*.joblib`
 
-The processed dataset, figures, reports, model binaries, prediction history,
-and virtual environment are ignored because they are generated, large, or
-machine-specific. Run `python main.py` after cloning to recreate them.
+The processed dataset, prediction history, and virtual environment are ignored
+because they are large or machine-specific. The small trained model binaries,
+metrics report, and evaluation figures are included so the deployed dashboard
+works immediately after installation. Run `python main.py` to recreate or
+replace them after downloading the dataset.
 
 The raw dataset uses [Git LFS](https://git-lfs.com/). After cloning, install
 Git LFS and run `git lfs pull` if the dataset pointer is downloaded instead of

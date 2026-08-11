@@ -1,0 +1,43 @@
+{
+  "random_forest": {
+    "scores": {
+      "accuracy": 0.9017,
+      "precision_real": 0.8782,
+      "recall_real": 0.9095,
+      "f1": 0.8935,
+      "roc_auc": 0.9698
+    },
+    "best_params": {
+      "n_estimators": 50,
+      "max_depth": 20
+    }
+  },
+  "xgboost": {
+    "scores": {
+      "accuracy": 0.9377,
+      "precision_real": 0.9122,
+      "recall_real": 0.9546,
+      "f1": 0.9329,
+      "roc_auc": 0.9843
+    },
+    "best_params": {
+      "n_estimators": 60,
+      "max_depth": 4,
+      "learning_rate": 0.1
+    }
+  },
+  "lightgbm": {
+    "scores": {
+      "accuracy": 0.9482,
+      "precision_real": 0.9334,
+      "recall_real": 0.9538,
+      "f1": 0.9435,
+      "roc_auc": 0.9892
+    },
+    "best_params": {
+      "num_leaves": 31,
+      "n_estimators": 60,
+      "learning_rate": 0.1
+    }
+  }
+}
