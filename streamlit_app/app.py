@@ -14,11 +14,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.data_cleaning import clean_data
-from src.eda import run_eda
-from src.modeling import predict_news, train_baseline_models
-
-
 DATA_PATH = PROJECT_ROOT / "data" / "processed" / "cleaned_data.csv"
 PREDICTIONS_PATH = PROJECT_ROOT / "outputs" / "predictions" / "prediction_history.csv"
 
@@ -30,7 +25,12 @@ def load_data() -> pd.DataFrame:
     """Load the cleaned data while preserving empty text fields as strings."""
     if not DATA_PATH.exists():
         return pd.DataFrame()
-    df = pd.read_csv(DATA_PATH).fillna("")
+    try:
+        df = pd.read_csv(DATA_PATH).fillna("")
+    except (pd.errors.EmptyDataError, pd.errors.ParserError):
+        return pd.DataFrame()
+    if "label" not in df.columns or "content" not in df.columns:
+        return pd.DataFrame()
     df["label_name"] = df["label"].map({0: "Fake News", 1: "Real News"})
     df["word_count"] = df["content"].str.split().str.len()
     return df
@@ -79,11 +79,16 @@ with st.sidebar:
     st.header("Project controls")
     if st.button("Rebuild cleaned data and EDA"):
         with st.spinner("Cleaning and generating EDA..."):
+            from src.data_cleaning import clean_data
+            from src.eda import run_eda
+
             run_eda(clean_data())
             load_data.clear()
         st.success("Data and EDA refreshed.")
     if st.button("Train or retrain models"):
         with st.spinner("Training three models..."):
+            from src.modeling import train_baseline_models
+
             train_baseline_models(tune=True)
             load_metrics.clear()
         st.success("Models trained and saved.")
@@ -102,6 +107,8 @@ with tab_demo:
             st.warning("Please enter a title or article first.")
         else:
             try:
+                from src.modeling import predict_news
+
                 result = predict_news(text_input, model_name)
                 label = "Fake News" if result["prediction"] == 0 else "Real News"
                 st.success(f"Prediction: {label}")
