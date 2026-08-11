@@ -44,8 +44,9 @@ Labels are interpreted as:
 - `0`: fake news
 - `1`: real news
 
-The raw and processed CSV files are excluded from Git because they are large.
-Download the dataset separately before running the workflow.
+The original raw CSV is included through Git LFS so that the repository can be
+cloned and reproduced directly. The processed CSV remains excluded because it
+is a generated 432 MB file; `python main.py` recreates it from the raw data.
 
 ## Methodology
 
@@ -143,8 +144,13 @@ The workflow writes these files locally:
 - `outputs/figures/`
 - `models/*.joblib`
 
-These generated artifacts are ignored by default where they may be large or
+The processed dataset, figures, reports, model binaries, prediction history,
+and virtual environment are ignored because they are generated, large, or
 machine-specific. Run `python main.py` after cloning to recreate them.
+
+The raw dataset uses [Git LFS](https://git-lfs.com/). After cloning, install
+Git LFS and run `git lfs pull` if the dataset pointer is downloaded instead of
+the CSV file.
 
 ## Limitations and future work
 
