@@ -169,5 +169,5 @@ evaluation on a time-based or independently verified test set.
 
 ## Supporting documents
 
-- [Presentation guide](presentation_guide.md)
-- [Report template](report_template.md)
+- [Presentation guide](./presentation_guide.md)
+- [Report template](./report_template.md)
