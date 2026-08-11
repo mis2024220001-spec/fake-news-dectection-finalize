@@ -7,12 +7,14 @@ from src.data_loader import load_data
 def _repair_text_encoding(value: object) -> str:
     """Repair common UTF-8 text that was incorrectly decoded as Latin-1."""
     text = str(value)
-    if not any(marker in text for marker in ("Ã", "Â", "â", "ð")):
-        return text
-    try:
-        return text.encode("latin1").decode("utf-8")
-    except UnicodeError:
-        return text
+    for _ in range(2):
+        if not any(marker in text for marker in ("Ã", "Â", "â", "ð")):
+            break
+        try:
+            text = text.encode("cp1252").decode("utf-8")
+        except UnicodeError:
+            break
+    return text.replace("\ufffd", " ")
 
 
 def clean_data() -> pd.DataFrame:
