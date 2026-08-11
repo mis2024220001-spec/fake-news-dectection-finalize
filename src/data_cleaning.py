@@ -4,6 +4,17 @@ import pandas as pd
 from src.data_loader import load_data
 
 
+def _repair_text_encoding(value: object) -> str:
+    """Repair common UTF-8 text that was incorrectly decoded as Latin-1."""
+    text = str(value)
+    if not any(marker in text for marker in ("Ã", "Â", "â", "ð")):
+        return text
+    try:
+        return text.encode("latin1").decode("utf-8")
+    except UnicodeError:
+        return text
+
+
 def clean_data() -> pd.DataFrame:
     """Load, clean, and save the fake-news dataset for modeling."""
     df = load_data()
@@ -22,8 +33,8 @@ def clean_data() -> pd.DataFrame:
     if "text" not in df.columns:
         df["text"] = ""
 
-    df["title"] = df["title"].fillna("")
-    df["text"] = df["text"].fillna("")
+    df["title"] = df["title"].fillna("").map(_repair_text_encoding)
+    df["text"] = df["text"].fillna("").map(_repair_text_encoding)
 
     # Find the label column in a robust way
     label_col = None

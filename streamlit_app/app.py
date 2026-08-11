@@ -15,6 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 DATA_PATH = PROJECT_ROOT / "data" / "processed" / "cleaned_data.csv"
+SAMPLE_DATA_PATH = PROJECT_ROOT / "data" / "processed" / "cleaned_sample.csv"
 PREDICTIONS_PATH = PROJECT_ROOT / "outputs" / "predictions" / "prediction_history.csv"
 
 st.set_page_config(page_title="Fake News Detection", page_icon="📰", layout="wide")
@@ -23,10 +24,11 @@ st.set_page_config(page_title="Fake News Detection", page_icon="📰", layout="w
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
     """Load the cleaned data while preserving empty text fields as strings."""
-    if not DATA_PATH.exists():
+    path = DATA_PATH if DATA_PATH.exists() else SAMPLE_DATA_PATH
+    if not path.exists():
         return pd.DataFrame()
     try:
-        df = pd.read_csv(DATA_PATH).fillna("")
+        df = pd.read_csv(path).fillna("")
     except (pd.errors.EmptyDataError, pd.errors.ParserError):
         return pd.DataFrame()
     if "label" not in df.columns or "content" not in df.columns:
