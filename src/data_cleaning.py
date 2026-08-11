@@ -6,20 +6,28 @@ from src.data_loader import load_data
 
 def _repair_text_encoding(value: object) -> str:
     """Repair common UTF-8 text that was incorrectly decoded as Latin-1."""
-    text = str(value)
+    text = str(value).replace("\ufffd", " ")
+
+    def artifact_score(candidate: str) -> int:
+        return sum(candidate.count(marker) for marker in ("Ã", "Â", "â", "ð", "\ufffd"))
+
     for _ in range(2):
-        if not any(marker in text for marker in ("Ã", "Â", "â", "ð")):
+        if artifact_score(text) == 0:
             break
         try:
-            text = text.encode("cp1252").decode("utf-8")
+            repaired = text.encode("cp1252", errors="ignore").decode("utf-8")
         except UnicodeError:
             break
-    return text.replace("\ufffd", " ")
+        if artifact_score(repaired) >= artifact_score(text):
+            break
+        text = repaired
+    return " ".join(text.split())
 
 
 def clean_data() -> pd.DataFrame:
     """Load, clean, and save the fake-news dataset for modeling."""
     df = load_data()
+    df = df.loc[:, ~df.columns.astype(str).str.match(r"^Unnamed")]
 
     print("=" * 50)
     print("Original dataset")
@@ -82,7 +90,17 @@ def clean_data() -> pd.DataFrame:
     output_dir = Path(__file__).resolve().parents[1] / "data" / "processed"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "cleaned_data.csv"
-    df.to_csv(output_path, index=False)
+    # UTF-8 with BOM lets Excel detect the encoding and preserves quoted commas.
+    df.to_csv(output_path, index=False, encoding="utf-8-sig")
+
+    preview = df.head(100).copy()
+    preview.to_csv(output_dir / "cleaned_sample.csv", index=False, encoding="utf-8-sig")
+    preview.to_csv(
+        output_dir / "cleaned_sample_excel.tsv",
+        index=False,
+        sep="\t",
+        encoding="utf-8-sig",
+    )
 
     print(f"\nCleaned dataset saved to:\n{output_path}")
     return df

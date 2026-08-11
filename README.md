@@ -46,7 +46,10 @@ Labels are interpreted as:
 
 The original raw CSV is included through Git LFS so that the repository can be
 cloned and reproduced directly. The processed CSV remains excluded because it
-is a generated 432 MB file; `python main.py` recreates it from the raw data.
+is a generated file; `python main.py` recreates it from the raw data. The
+cleaning step writes UTF-8 CSV with proper quoting and also creates
+`data/processed/cleaned_sample_excel.tsv`, which can be opened directly in
+Excel without article commas being interpreted as extra columns.
 
 ## Methodology
 
@@ -106,6 +109,10 @@ Run the complete data and model workflow:
 ```powershell
 python main.py
 ```
+
+When opening `cleaned_data.csv` in Excel, use **Data > From Text/CSV**, choose
+**UTF-8** encoding and **Comma** as the delimiter. Do not double-click a CSV
+if Excel's regional settings use semicolons as the default separator.
 
 Start the Streamlit dashboard:
 
